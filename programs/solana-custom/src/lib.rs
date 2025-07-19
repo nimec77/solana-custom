@@ -1,10 +1,12 @@
 use anchor_lang::prelude::*;
 
 use crate::message::Message;
+use crate::error_codes::ErrorCode;
 
 declare_id!("3wxi1Gg12VhCgYB5onA5mr28xYBK6szpvNdAowkDje8c");
 
 mod message;
+mod error_codes;
 
 #[derive(Accounts)]
 pub struct SendMessage<'info> {
@@ -18,15 +20,20 @@ pub struct SendMessage<'info> {
 
 #[program]
 pub mod solana_custom {
-    use anchor_lang::solana_program::entrypoint::ProgramResult;
-
     use super::*;
 
     pub fn send_message(
         ctx: Context<SendMessage>,
         topic: String,
         content: String,
-    ) -> ProgramResult {
+    ) -> Result<()> {
+        if topic.len() > 50 {
+            return err!(ErrorCode::TopicTooLong);
+        }
+        if content.len() > 280 {
+            return err!(ErrorCode::ContentTooLong);
+        }
+
         let message_account: &mut Account<Message> = &mut ctx.accounts.message;
         let sender: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
