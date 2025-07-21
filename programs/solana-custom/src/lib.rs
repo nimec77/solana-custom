@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::message::Message;
 use crate::error_codes::ErrorCode;
 
-declare_id!("3wxi1Gg12VhCgYB5onA5mr28xYBK6szpvNdAowkDje8c");
+declare_id!("BmNT3YmJjS58GAJGqf8a5GWsPK7tsYQpvVXovvkgFee5");
 
 mod message;
 mod error_codes;
