@@ -10,10 +10,14 @@ describe("solana-custom", () => {
   const program = anchor.workspace.solanaCustom as Program<SolanaCustom>;
 
   it('can send a new message', async () => {
+    // Define test data
+    const topic = 'space exploration';
+    const content = 'Discovering new worlds!';
+    
     // Generate a new key pair for the message account (message).
     const message = anchor.web3.Keypair.generate();
     await program.methods
-      .sendMessage('space exploration', 'Discovering new worlds!')
+      .sendMessage(topic, content)
       .accounts({
         message: message.publicKey, // Define the message account.
         author: program.provider.wallet.publicKey, // Author account (payer)
@@ -23,8 +27,8 @@ describe("solana-custom", () => {
     const messageAccount = await program.account.message.fetch(message.publicKey);
 
     assert.equal(messageAccount.author.toBase58(), program.provider.publicKey.toBase58());
-    assert.equal(messageAccount.topic, 'space exploration');
-    assert.equal(messageAccount.content, 'Discovering new worlds!');
+    assert.equal(messageAccount.topic, topic);
+    assert.equal(messageAccount.content, content);
     assert.ok(messageAccount.timestamp);
   });
 });
